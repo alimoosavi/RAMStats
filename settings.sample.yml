@@ -1,4 +1,6 @@
 server:
   ram_monitoring_interval: 60
+  host: "0.0.0.0"
+  port: 8000
 db:
   path: database.db
