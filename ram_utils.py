@@ -24,7 +24,7 @@ class DataStore:
                                 used_mb REAL,
                                 timestamp INTEGER
                                 )''')
-        # self.cursor.execute('''CREATE INDEX time_stamp_index ON ram_stats(timestamp);''')
+        self.cursor.execute('''CREATE INDEX time_stamp_index ON ram_stats(timestamp);''')
         self.conn.commit()
 
     def insert_data(self, total, free, used, time_stamp):
