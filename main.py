@@ -1,5 +1,6 @@
 import settings
 import uvicorn
+import asyncio
 from fastapi import FastAPI, HTTPException
 from ram_utils import DataStore, DBInteractionException, RAMStatsCollector
 
@@ -20,12 +21,22 @@ async def get_last_n_ram_usage(n: int):
         raise HTTPException(status_code=500, detail="Something bad occurred.")
 
 
+async def periodic_ram_usage():
+    ram_collector = RAMStatsCollector(store=store, interval_seconds=ram_monitoring_interval)
+    while True:
+        ram_collector.store_ram_data()
+        await asyncio.sleep(ram_monitoring_interval)
+
+
+@app.on_event("startup")
+async def startup_event():
+    asyncio.create_task(periodic_ram_usage())
+
+
 @app.on_event("shutdown")
 def shutdown_event():
     store.teardown()
 
 
 if __name__ == "__main__":
-    ram_collector = RAMStatsCollector(interval_seconds=ram_monitoring_interval)
-    ram_collector.store_ram_job()
     uvicorn.run(app, host=host, port=port)
