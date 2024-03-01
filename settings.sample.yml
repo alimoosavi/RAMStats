@@ -1,0 +1,4 @@
+server:
+  ram_monitoring_interval: 60
+db:
+  path: database.db
